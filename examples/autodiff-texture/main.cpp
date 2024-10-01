@@ -51,8 +51,8 @@ struct AutoDiffTexture : public WindowedAppBase
 
             SLANG_RETURN_ON_FAIL(slangSession->createCompileRequest(request.writeRef()));
 
-            const char* args[] = { "-obfuscate", "-line-directive-mode", "source-map" };
-
+            const char* args[] = { "-line-directive-mode", "source-map" };
+            //"-obfuscate", 
             request->processCommandLineArguments(args, SLANG_COUNT_OF(args));
 
             // Enable debug info
