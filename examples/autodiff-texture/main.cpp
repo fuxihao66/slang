@@ -46,6 +46,20 @@ struct AutoDiffTexture : public WindowedAppBase
         ComPtr<slang::ISession> slangSession;
         slangSession = device->getSlangSession();
 
+        {
+            ComPtr<slang::ICompileRequest> request;
+
+            SLANG_RETURN_ON_FAIL(slangSession->createCompileRequest(request.writeRef()));
+
+            const char* args[] = { "-obfuscate", "-line-directive-mode", "source-map" };
+
+            request->processCommandLineArguments(args, SLANG_COUNT_OF(args));
+
+            // Enable debug info
+            request->setDebugInfoLevel(SLANG_DEBUG_INFO_LEVEL_MAXIMAL);
+        }
+
+
         ComPtr<slang::IBlob> diagnosticsBlob;
         Slang::String path = resourceBase.resolveResource(fileName);
         slang::IModule* module = slangSession->loadModule(path.getBuffer(), diagnosticsBlob.writeRef());
@@ -273,7 +287,7 @@ struct AutoDiffTexture : public WindowedAppBase
     }
     Slang::Result initialize()
     {
-        initializeBase("autodiff-texture", 1024, 768);
+        initializeBase("autodiff-texture", 1024, 768, gfx::DeviceType::DirectX12);
         srand(20421);
 
         if (!isTestMode())
